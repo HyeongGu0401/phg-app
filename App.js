@@ -1,21 +1,38 @@
 import { StatusBar } from 'expo-status-bar';
+import { Alert } from "react-native";
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import Loading from './Loading';
+import * as Location from 'expo-location';
+import { Alert } from 'react-native';
+import axios from 'axios'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+const API_KEY = "78bc1580f36d84e041ec5f915e37bf2b"
 
-    </View>
-  );
+export default class extends React.Component {
+  state = {
+    isLoading: true
+  };
+  getWeather = async (latitude, longitude) => {
+    const { data } = await axios.get(
+      `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
+    )
+  }
+  getLocation = async () => {
+    try {
+      await Location.requestPermissionsAsync();
+      const { coords: { latitude, longitude }
+      } = await Location.getCurrentPositionAsync();
+      this.getWeather(latitude, longitude)
+      this.setState({ isLoading: false });
+    } catch (error) {
+      Alert.alert("권한을 찾을수 없습니다", "확인해주세요.");
+    }
+  };
+  componentDidMount() {
+    this.getLocation();
+  }
+  render() {
+    const { isLoading } this.state
+    return isLoading ? <Loading /> : null;
+  }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
