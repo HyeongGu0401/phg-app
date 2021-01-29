@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
 
 function Loading() {
     return <View style={StyleSheet.container}>
+        <StatusBar barStyle="dark-content" />
         <Text style={styles.Text}>빌어먹을 날씨</Text>
     </View>
 }
